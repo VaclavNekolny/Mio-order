@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Objednávka</title>
+  </head>
+  <body>
+    <div class="container-lg bg-light rounded-3 p-3">
+      <form class="row g-2 align-items-center">
+        <h1 class="text-primary mt-5">Objednávka</h1>
+
+        <div class="col-6 col-lg-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Jméno"
+            id="jmeno"
+          />
+        </div>
+        <div class="col-6 col-lg-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Příjmení"
+            id="prijmeni"
+          />
+        </div>
+        <div class="col-0 col-lg-6"></div>
+
+        <!-- Tabulka s objednávkou -->
+        <div class="container mt-5 mb-3 bg-white rounded-1 p-4">
+          <div class="lead mb-3 d-flex justify-content-between">
+            <span>Vaše objednávka</span>
+            <span>Zákazník: Václav Nekolný</span>
+          </div>
+          <table class="table table-white d-none" id="tabulkaObjednavek">
+            <tr>
+              <th scope="row">Název produktu</th>
+              <th>počet kusů</th>
+              <th>cena/kus</th>
+              <th>cena celkem</th>
+            </tr>
+          </table>
+          <span class="text-secondary" id="zpravaVTabulce"
+            >Objednávka je zatím prázdná...</span
+          >
+        </div>
+        <!-- END  Tabulka s objednávkou -->
+
+        <!-- Výběr produktu -->
+        <div id="vyberProduktu" class="row g-2 d-none">
+          <div class="col-12 col-md-7">
+            <div class="row g-2">
+              <div class="col-6">
+                <select
+                  class="form-select"
+                  id="produkt"
+                  aria-placeholder="Vyberte variantu"
+                >
+                  <option selected value="0">Vyberte produkt</option>
+                  <option value="1">Kalhoty</option>
+                  <option value="2">Ponožky</option>
+                  <option value="3">Tričko</option>
+                  <option value="4">Boty</option>
+                  <option value="5">Tričko</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <select class="form-select" id="varianta">
+                  <option selected value="0">Vyberte variantu</option>
+                  <option value="1">zelené</option>
+                  <option value="2">modré</option>
+                  <option value="3">červené</option>
+                  <option value="4">bavlněné</option>
+                  <option value="5">kouzelné</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 col-md-2">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Počet kusů"
+              id="pocetKusu"
+            />
+          </div>
+          <div class="col-4 col-md-2">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Cena/ks"
+              id="cenaZaKus"
+            />
+          </div>
+          <div class="col-1">
+            <a
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              data-bs-custom-class="custom-tooltip"
+              data-bs-title="Přidat do objednávky"
+              class="link-success p-2"
+              href="#ulozit"
+              onclick="pridejDoObjednavky()"
+              id="ulozitBtn"
+            >
+            <i class="bi-floppy fs-2"></i>
+            </a>
+          </div>
+        </div>
+        <!-- END  Výběr produktu -->
+
+        <!-- Výběr produktu -->
+        <div id="vlastniVyberProduktu" class="row g-2 d-none">
+          <div class="col-12 col-md-7">
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Zadejte vlastní název produktu"
+            />
+          </div>
+          <div class="col-4 col-md-2">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Počet kusů"
+              id="pocetKusu"
+            />
+          </div>
+          <div class="col-4 col-md-2">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Cena/ks"
+              id="cenaZaKus"
+            />
+          </div>
+          <div class="col-1">
+            <a
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              data-bs-custom-class="custom-tooltip"
+              data-bs-title="Přidat do objednávky"
+              class="link-success p-2"
+              href="#ulozit"
+              onclick="pridejDoObjednavky()"
+              id="ulozitBtn"
+            >
+              <i class="bi bi-floppy fs-2"></i>
+            </a>
+          </div>
+        </div>
+        <!-- END  Výběr produktu -->
+
+        <!-- Zelená tlačítka + + -->
+        <div
+          class="d-flex flex-row justify-content-center text-align-center gap-3 my-5"
+        >
+          <!-- Nový produkt - tlačítko -->
+          <a
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            data-bs-title="Nový produkt"
+            class="link-success"
+            href="#"
+            onclick="novyProdukt()"
+            ><i class="bi bi-plus-circle-fill fs-1"></i
+          ></a>
+
+          <!-- Nový vlastní produkt - tlačítko -->
+          <a
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            data-bs-title="Nový vlastní produkt"
+            class="link-success"
+            style="text-align: center"
+            href="#vlastni"
+            onclick="novyVlastniProdukt()"
+            ><i class="bi bi-plus-circle fs-1"></i
+          ></a>
+        </div>
+        <!-- END  Zelená tlačítka + + -->
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg col-8 offset-2 mb-5"
+        >
+          Rekapitulace objednávky
+        </button>
+      </form>
+    </div>
+    <script src="js/helpers.js"></script>
+    <script src="js/komunikaceSBankou.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
