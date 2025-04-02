@@ -61,7 +61,7 @@ const varianta1 = `<div class="col-12 col-md-7">
   data-bs-title="Přidat do objednávky"
   class="link-success p-2"
   href="#ulozit"
-  onclick="pridejDoObjednavky()"
+  onclick="zobrazitVyberProduktu(0)"
   id="ulozitBtn"
 >
 <i class="bi-floppy fs-2"></i>
@@ -99,7 +99,7 @@ const varianta2 = `<div class="col-12 col-md-7">
               data-bs-title="Přidat do objednávky"
               class="link-success p-2"
               href="#ulozit"
-              onclick="pridejDoObjednavky()"
+              onclick="zobrazitVyberProduktu(0)"
               id="ulozitBtn"
             >
               <i class="bi bi-floppy fs-2"></i>
