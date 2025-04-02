@@ -1,46 +1,31 @@
-function nactiDataZBanky(url) {
-  let seznam_div = document.getElementById("poke-seznam");
-  seznam_div.innerHTML = "<ul id='poke-seznam-ul'></ul>";
-  let seznam_ul = document.getElementById("poke-seznam-ul");
+// function vratDnesVUrlFormatu() {
+//   let datum = new Date();
+//   let datumUrl =
+//     String(datum.getFullYear()) +
+//     String(datum.getMonth()).padStart(2, "0") +
+//     String(datum.getDay()).padStart(2, "0");
+//   return datumUrl;
+// }
 
-  stahniJSON(url, (data) => {
-    for (let pokemon of data.results) {
-      let novaPolozka = document.createElement("li");
-      novaPolozka.innerText = pokemon.name;
-      seznam_ul.appendChild(novaPolozka);
-      let poke_url = pokemon.url;
-      novaPolozka.addEventListener("click", () => nactiPokemona(poke_url));
-    }
+function vratKurzovniListekJSON() {
+  return new Promise((resolve, reject) => {
+    let mujRequest = new XMLHttpRequest();
+    mujRequest.open("GET", "https://data.kurzy.cz/json/meny/b[6].json");
+
+    mujRequest.onload = function () {
+      if (mujRequest.status >= 200 && mujRequest.status < 400) {
+        resolve(JSON.parse(mujRequest.responseText));
+      } else {
+        reject("Chyba při načítání dat z ČNB");
+      }
+    };
+    mujRequest.send();
   });
 }
 
-function vratDnesniDatumUrl() {
-  let datum = new Date();
-  let datumUrl =
-    String(datum.getFullYear()) +
-    String(datum.getMonth()).padStart(2, "0") +
-    String(datum.getDay()).padStart(2, "0");
-  return datumUrl;
-}
+async function vratfiltrovanaData() {
+  data = await vratKurzovniListekJSON();
 
-function vratKurzovniListekJSON() {
-  let listek;
-  let mujRequest = new XMLHttpRequest();
-  mujRequest.open("GET", "https://data.kurzy.cz/json/meny/b[6].json");
-  mujRequest.onload = function () {
-    if (mujRequest.status >= 200 && mujRequest.status < 400) {
-      let data = JSON.parse(mujRequest.responseText);
-      listek = filtrujData(data);
-    } else {
-      alert("Chyba při načítání dat z ČNB");
-    }
-  };
-  mujRequest.send();
-}
-console.log(vratKurzovniListekJSON());
-
-
-function filtrujData(data) {
   let filtrovanaMena;
   let cistaData = [];
 
@@ -54,3 +39,14 @@ function filtrujData(data) {
   }
   return cistaData;
 }
+
+async function main() {
+  let cistaData = await vratfiltrovanaData();
+  let menaText = "";
+  for (mena in cistaData) {
+    // menaText = `<td>${mena.zkratka}</td><td>${mena.nazev}</td><td>${mena.kurz}</td>`;
+  }
+  console.log(cistaData);
+}
+
+main();
