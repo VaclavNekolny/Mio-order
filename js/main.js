@@ -9,9 +9,17 @@ let jmeno,
   objednavka,
   ulozitBtn;
 
+// Jméno a příjmení z inputů na fakturu
+jmeno = document.getElementById("jmeno");
+prijmeni = document.getElementById("prijmeni");
+jmeno.addEventListener("input", function () {
+  document.getElementById("jmenoZakaznika").textContent = this.value;
+});
+prijmeni.addEventListener("input", function () {
+  document.getElementById("prijmeniZakaznika").textContent = this.value;
+});
+
 function pridejDoObjednavky() {
-  jmeno = document.getElementById("jmeno").value.trim();
-  prijmeni = document.getElementById("prijmeni").value.trim();
   tabulkaObjednavek = document.getElementById("tabulkaObjednavek");
   zpravaVTabulce = document.getElementById("zpravaVTabulce");
 
@@ -20,7 +28,6 @@ function pridejDoObjednavky() {
 
   varianta = document.getElementById("varianta");
   let variantaProduktu = varianta.options[varianta.value].text; //Text z vybraného option
-
 
   pocetKusu = document.getElementById("pocetKusu").value;
   cenaZaKus = document.getElementById("cenaZaKus").value;
@@ -36,8 +43,6 @@ function pridejDoObjednavky() {
 
   zobrazit(tabulkaObjednavek);
   skryt(zpravaVTabulce);
-  skryt(vlastniVyberProduktu);
-  skryt(vyberProduktu);
   tabulkaObjednavek.appendChild(objednavka);
 }
 
@@ -52,7 +57,6 @@ function novyVlastniProdukt() {
   zobrazit(vlastniVyberProduktu);
   skryt(vyberProduktu);
 }
-
 
 // Aktivace BS tooltips - pomohl mi ChatGPT
 document.addEventListener("DOMContentLoaded", function () {
