@@ -3,6 +3,7 @@ let jmeno,
   tabulkaObjednavek,
   produkt,
   varianta,
+  celyNazevProduktu,
   pocetKusu,
   cenaZaKus,
   cenaCelkem,
@@ -19,24 +20,29 @@ prijmeni.addEventListener("input", function () {
   document.getElementById("prijmeniZakaznika").textContent = this.value;
 });
 
-function pridejDoObjednavky() {
+function pridejDoObjednavky(variantaVstupu) {
   tabulkaObjednavek = document.getElementById("tabulkaObjednavek");
   zpravaVTabulce = document.getElementById("zpravaVTabulce");
 
-  produkt = document.getElementById("produkt");
-  let nazevProduktu = produkt.options[produkt.value].text; //Text z vybraného option
+  // Dvě varianty vkládání produktu do objednávky
+  if (variantaVstupu == 1) {
+    produkt = document.getElementById("produkt");
+    let nazevProduktu = produkt.options[produkt.value].text; //Text z vybraného option
 
-  varianta = document.getElementById("varianta");
-  let variantaProduktu = varianta.options[varianta.value].text; //Text z vybraného option
+    varianta = document.getElementById("varianta");
+    let variantaProduktu = varianta.options[varianta.value].text; //Text z vybraného option
+
+    celyNazevProduktu = nazevProduktu + " " + variantaProduktu;
+  } else if (variantaVstupu == 2) {
+    celyNazevProduktu = document.getElementById("vlastniNazevProduktu").value;
+  }
 
   pocetKusu = document.getElementById("pocetKusu").value;
   cenaZaKus = document.getElementById("cenaZaKus").value;
-  ulozitBtn = document.getElementById("ulozitBtn");
-
   cenaCelkem = cenaZaKus * pocetKusu;
 
   objednavka = document.createElement("tr");
-  objednavka.innerHTML = `<td>${nazevProduktu} ${variantaProduktu}</td>
+  objednavka.innerHTML = `<td>${celyNazevProduktu}</td>
                           <td>${pocetKusu}</td>
                           <td>${cenaZaKus} kč</td>
                           <td>${cenaCelkem} kč</td>`;
@@ -44,18 +50,6 @@ function pridejDoObjednavky() {
   zobrazit(tabulkaObjednavek);
   skryt(zpravaVTabulce);
   tabulkaObjednavek.appendChild(objednavka);
-}
-
-let vyberProduktu = document.getElementById("vyberProduktu");
-let vlastniVyberProduktu = document.getElementById("vlastniVyberProduktu");
-
-function novyProdukt() {
-  zobrazit(vyberProduktu);
-  skryt(vlastniVyberProduktu);
-}
-function novyVlastniProdukt() {
-  zobrazit(vlastniVyberProduktu);
-  skryt(vyberProduktu);
 }
 
 // Aktivace BS tooltips - pomohl mi ChatGPT

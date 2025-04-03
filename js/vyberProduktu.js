@@ -60,8 +60,7 @@ const varianta1 = `<div class="col-12 col-md-7">
   data-bs-custom-class="custom-tooltip"
   data-bs-title="Přidat do objednávky"
   class="link-success p-2"
-  href="#ulozit"
-  onclick="zobrazitVyberProduktu(0)"
+  onclick="pridejDoObjednavky(1)"
   id="ulozitBtn"
 >
 <i class="bi-floppy fs-2"></i>
@@ -73,6 +72,7 @@ const varianta2 = `<div class="col-12 col-md-7">
               class="form-control"
               type="text"
               placeholder="Zadejte vlastní název produktu"
+              id="vlastniNazevProduktu"
             />
           </div>
           <div class="col-4 col-md-2">
@@ -98,8 +98,7 @@ const varianta2 = `<div class="col-12 col-md-7">
               data-bs-custom-class="custom-tooltip"
               data-bs-title="Přidat do objednávky"
               class="link-success p-2"
-              href="#ulozit"
-              onclick="zobrazitVyberProduktu(0)"
+              onclick="pridejDoObjednavky(2)"
               id="ulozitBtn"
             >
               <i class="bi bi-floppy fs-2"></i>
