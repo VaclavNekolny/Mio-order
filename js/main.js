@@ -1,21 +1,15 @@
-let jmeno,
-  prijmeni,
-  tabulkaObjednavek,
-  produkt,
-  varianta,
-  celyNazevProduktu,
-  pocetKusu,
-  cenaZaKus,
-  cenaCelkem,
-  objednavka,
-  ulozitBtn;
+let tabulkaObjednavek = document.getElementById("tabulkaObjednavek");
+let zpravaVTabulce = document.getElementById("zpravaVTabulce");
 
+// Array s položkami objednávky
 let kosik = [];
+
+// Vytvoří SELECT nabídku měn v rekapitulaci objednávky
 vytvorSelectNabidkuMen();
 
-// Jméno a příjmení z inputů na fakturu
-jmeno = document.getElementById("jmeno");
-prijmeni = document.getElementById("prijmeni");
+// Vypíše jménao a příjmení z formuláře na objednávku
+let jmeno = document.getElementById("jmeno");
+let prijmeni = document.getElementById("prijmeni");
 jmeno.addEventListener("input", function () {
   document.getElementById("jmenoZakaznika").textContent = this.value;
 });
@@ -23,45 +17,74 @@ prijmeni.addEventListener("input", function () {
   document.getElementById("prijmeniZakaznika").textContent = this.value;
 });
 
-// Přidá položku do objednávky
-function pridejDoObjednavky(variantaVstupu) {
-  tabulkaObjednavek = document.getElementById("tabulkaObjednavek");
-  zpravaVTabulce = document.getElementById("zpravaVTabulce");
+function validujAPridejDoObjednavky(variantaVstupu) {
+  let celyNazev;
 
-  // Dvě varianty vkládání produktu do objednávky
+  // Výběr ze dvou variant vkládání produktu
   if (variantaVstupu == 1) {
-    produkt = document.getElementById("produkt");
+    let produkt = document.getElementById("produkt");
     let nazevProduktu = produkt.options[produkt.value].text; //Text z vybraného option
 
-    varianta = document.getElementById("varianta");
+    let varianta = document.getElementById("varianta");
     let variantaProduktu = varianta.options[varianta.value].text; //Text z vybraného option
-
-    celyNazevProduktu = nazevProduktu + " " + variantaProduktu;
+    celyNazev = nazevProduktu + " " + variantaProduktu;
   } else if (variantaVstupu == 2) {
-    celyNazevProduktu = document.getElementById("vlastniNazevProduktu").value;
+    celyNazev = document.getElementById("vlastniNazevProduktu").value;
   }
 
-  pocetKusu = document.getElementById("pocetKusu").value;
-  cenaZaKus = document.getElementById("cenaZaKus").value;
-  cenaCelkem = cenaZaKus * pocetKusu;
+  let pocetKusu = document.getElementById("pocetKusu").value;
+  let cenaZaKus = document.getElementById("cenaZaKus").value;
 
-  objednavka = document.createElement("tr");
-  objednavka.innerHTML = `<td>${celyNazevProduktu}</td>
+  // Validace vstupů při vkládání produktu
+  if (variantaVstupu == 1) {
+    if (produkt.value == 0) {
+      alert("Vyberte prosím produkt");
+    } else if (varianta.value == 0) {
+      alert("Vyberte prosím variantu produktu");
+    } else if (pocetKusu <= 0) {
+      alert("Počet kusů musí být alespoň 1");
+    } else if (cenaZaKus <= 0) {
+      alert("Cena musí být alespoň 1kč");
+    } else {
+      pridejDoObjednavky(celyNazev, pocetKusu, cenaZaKus);
+    }
+  } else {
+    if (celyNazev.length < 3) {
+      alert("Celý vlastní název musí mít alespoň 3 znaky");
+    } else if (pocetKusu <= 0) {
+      alert("Počet kusů musí být alespoň 1");
+    } else if (cenaZaKus <= 0) {
+      alert("Cena musí být alespoň 1kč");
+    } else {
+      pridejDoObjednavky(celyNazev, pocetKusu, cenaZaKus);
+    }
+  }
+}
+
+// Přidá položku do objednávky
+function pridejDoObjednavky(nazev, pocetKusu, cenaZaKus) {
+  zobrazitVyberProduktu(0); //skryje formulář pro zadání produktu
+
+  let cenaCelkem = cenaZaKus * pocetKusu;
+
+  // Přidání položky to HTML tabulky
+  let objednavka = document.createElement("tr");
+  objednavka.innerHTML = `<td>${nazev}</td>
                           <td>${pocetKusu}</td>
                           <td>${cenaZaKus} kč</td>
                           <td>${cenaCelkem} kč</td>`;
+  tabulkaObjednavek.querySelector("tbody").appendChild(objednavka);
 
+  // Přidání položky do košíku ARRAY
   let polozkaDoKosiku = {};
-  polozkaDoKosiku.nazev = celyNazevProduktu;
+  polozkaDoKosiku.nazev = nazev;
   polozkaDoKosiku.pocetKusu = pocetKusu;
   polozkaDoKosiku.cenaZaKus = cenaZaKus;
   polozkaDoKosiku.cenaCelkem = cenaCelkem;
-
   kosik.push(polozkaDoKosiku);
 
   zobrazit(tabulkaObjednavek);
   skryt(zpravaVTabulce);
-  tabulkaObjednavek.appendChild(objednavka);
 }
 
 async function generujRekapitulaciObjednavky() {
@@ -76,15 +99,9 @@ async function generujRekapitulaciObjednavky() {
   }
 
   let rekapitulaceTabukla = document.getElementById("rekapitulaceTabulka");
-  rekapitulaceTabukla.innerHTML = `<tr>
-                  <th scope="col">Název produktu</th>
-                  <th scope="col">počet ks</th>
-                  <th scope="col">CZK/ks</th>
-                  <th scope="col">CZK celkem</th>
-                  <th scope="col">CZK s DPH</th>
-                  <th scope="col">cizí měna</th>
-                </tr>`;
+  zobrazit(rekapitulaceTabukla);
 
+  rekapitulaceTabukla.querySelector("tbody").innerHTML = "";
   for (let polozka of kosik) {
     let tr = document.createElement("tr");
     tr.innerHTML = `<td scope="row">${polozka.nazev}</td>
@@ -92,12 +109,12 @@ async function generujRekapitulaciObjednavky() {
                     <td>${polozka.cenaZaKus} kč</td>
                     <td>${polozka.cenaCelkem} kč</td>
                     <td>${(polozka.cenaCelkem * 1.21).toFixed(2)} kč</td>
-                    <td>${vypocitejCiziMenu(
+                    <td>${vypisCiziMenu(
                       polozka.cenaCelkem,
                       kurzCiziMeny,
                       zkratkaCiziMeny
                     )}</td>`;
-    rekapitulaceTabukla.appendChild(tr);
+    rekapitulaceTabukla.querySelector("tbody").appendChild(tr);
   }
 
   // Patička tabulky -> cena za všechny položky
@@ -107,24 +124,26 @@ async function generujRekapitulaciObjednavky() {
       0
     );
     let tr = document.createElement("tr");
-    tr.innerHTML = `<td colspan=2></td>
-                    <td><b>Celkem:</b></td>
-                    <td><b>${cenaVsechPolozek} kč</b></td>
-                    <td><b>${(cenaVsechPolozek * 1.21).toFixed(2)} kč</b></td>
-                    <td><b>${vypocitejCiziMenu(
+    tr.innerHTML = `<td colspan=2 class="bg-light"></td>
+                    <td class="bg-light"><b>Celkem:</b></td>
+                    <td class="bg-light"><b>${cenaVsechPolozek} kč</b></td>
+                    <td class="bg-light"><b>${(cenaVsechPolozek * 1.21).toFixed(
+                      2
+                    )} kč</b></td>
+                    <td class="bg-light"><b>${vypisCiziMenu(
                       cenaVsechPolozek,
                       kurzCiziMeny,
                       zkratkaCiziMeny
                     )}</b></td>`;
-    rekapitulaceTabukla.appendChild(tr);
+    rekapitulaceTabukla.querySelector("tbody").appendChild(tr);
   }
 }
 
 let ciziMenaSelect = document.getElementById("vyberMenySelect");
 ciziMenaSelect.addEventListener("change", generujRekapitulaciObjednavky);
 
-//
-function vypocitejCiziMenu(cena, kurz, zkratkaCiziMeny) {
+// Vrátí (str) výpočet cizí měny a její zkratku
+function vypisCiziMenu(cena, kurz, zkratkaCiziMeny) {
   if (kurz) {
     return `${(cena / kurz).toFixed(2)} ${zkratkaCiziMeny}`;
   }

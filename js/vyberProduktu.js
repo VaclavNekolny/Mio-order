@@ -57,7 +57,7 @@ const varianta1 = `
 </div>
 <div class="col-1">
   <a class="link-success p-2"
-    onclick="pridejDoObjednavky(1); zobrazitVyberProduktu(0);">
+    onclick="validujAPridejDoObjednavky(1);">
   <i class="bi-floppy fs-2"></i>
   </a>
 </div>`;
@@ -90,7 +90,7 @@ const varianta2 = `
 </div>
 <div class="col-1">
   <a class="link-success p-2"
-    onclick="pridejDoObjednavky(2); zobrazitVyberProduktu(0);">
+    onclick="validujAPridejDoObjednavky(2);">
     <i class="bi bi-floppy fs-2"></i>
   </a>
 </div>`;
