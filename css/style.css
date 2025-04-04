@@ -3,11 +3,11 @@
 }
 
 #rekapitulaceTabulka {
-  font-size: clamp(0.7rem, 2.5vw, 1rem);
+  font-size: clamp(0.6rem, 2.5vw, 1rem);
 }
 
 #tabulkaObjednavek {
-  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-size: clamp(0.8em, 2.5vw, 1rem);
 }
 
 #hlavickaObjednavky {
