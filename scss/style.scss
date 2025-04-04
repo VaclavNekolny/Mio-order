@@ -1,3 +1,11 @@
 #zelenaTlacitka a {
   cursor: pointer;
 }
+
+#rekapitulaceTabulka {
+  font-size: clamp(0.7rem, 2.5vw, 1rem);
+}
+#tabulkaObjednavek {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+}
+
