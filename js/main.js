@@ -10,6 +10,8 @@ let jmeno,
   objednavka,
   ulozitBtn;
 
+let kosik = [];
+
 // Jméno a příjmení z inputů na fakturu
 jmeno = document.getElementById("jmeno");
 prijmeni = document.getElementById("prijmeni");
@@ -47,10 +49,73 @@ function pridejDoObjednavky(variantaVstupu) {
                           <td>${cenaZaKus} kč</td>
                           <td>${cenaCelkem} kč</td>`;
 
+  let polozkaDoKosiku = {};
+  polozkaDoKosiku.nazev = celyNazevProduktu;
+  polozkaDoKosiku.pocetKusu = pocetKusu;
+  polozkaDoKosiku.cenaZaKus = cenaZaKus;
+  polozkaDoKosiku.cenaCelkem = cenaCelkem;
+
+  kosik.push(polozkaDoKosiku);
+
   zobrazit(tabulkaObjednavek);
   skryt(zpravaVTabulce);
   tabulkaObjednavek.appendChild(objednavka);
 }
+
+async function generujRekapitulaciObjednavky() {
+  vytvorSelectNabidkuMen();
+  let ciziMenaSelect = document.getElementById("vyberMenySelect");
+  let ciziMenaVybrana = ciziMenaSelect.options[ciziMenaSelect.value];
+  let kurzCiziMeny = 1;
+  let zkratkaCiziMeny = "kč";
+
+  if (ciziMenaVybrana) {
+    kurzCiziMeny = ciziMenaVybrana.getAttribute("kurz");
+    zkratkaCiziMeny = ciziMenaVybrana.getAttribute("zkratka");
+  }
+
+  let rekapitulaceTabukla = document.getElementById("rekapitulaceTabulka");
+  rekapitulaceTabukla.innerHTML = `<tr>
+                  <th scope="col">Název produktu</th>
+                  <th scope="col">počet ks</th>
+                  <th scope="col">CZK/ks</th>
+                  <th scope="col">CZK celkem</th>
+                  <th scope="col">CZK s DPH</th>
+                  <th scope="col">cizí měna</th>
+                </tr>`;
+
+  for (let polozka of kosik) {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td scope="row">${polozka.nazev}</td>
+    <td>${polozka.pocetKusu}</td>
+                    <td>${polozka.cenaZaKus} kč</td>
+                    <td>${polozka.cenaCelkem} kč</td>
+                    <td>${(polozka.cenaCelkem * 1.21).toFixed(2)} kč</td>
+                    <td>${(polozka.cenaCelkem / kurzCiziMeny).toFixed(
+                      2
+                    )} ${zkratkaCiziMeny}</td>`;
+    rekapitulaceTabukla.appendChild(tr);
+  }
+
+  if (kosik.length > 0) {
+    let cenaVsechPolozek = kosik.reduce(
+      (acc, item) => acc + item.cenaCelkem,
+      0
+    );
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan=2></td>
+                    <td><b>Celkem:</b></td>
+                    <td><b>${cenaVsechPolozek} kč</b></td>
+                    <td><b>${(cenaVsechPolozek * 1.21).toFixed(2)} kč</b></td>
+                    <td><b>${(cenaVsechPolozek / kurzCiziMeny).toFixed(
+                      2
+                    )} ${zkratkaCiziMeny}</b></td>`;
+    rekapitulaceTabukla.appendChild(tr);
+  }
+}
+
+let ciziMenaSelect = document.getElementById("vyberMenySelect");
+ciziMenaSelect.addEventListener("change", generujRekapitulaciObjednavky);
 
 // Aktivace BS tooltips - pomohl mi ChatGPT
 document.addEventListener("DOMContentLoaded", function () {

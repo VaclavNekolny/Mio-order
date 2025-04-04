@@ -28,7 +28,7 @@ testovaciData = [
 function vratKurzovniListekJSON() {
   return new Promise((resolve, reject) => {
     let mujRequest = new XMLHttpRequest();
-    // mujRequest.open("GET", "https://data.kurzy.cz/json/meny/b[6].json");
+    mujRequest.open("GET", "https://data.kurzy.cz/json/meny/b[6].json");
 
     mujRequest.onload = function () {
       if (mujRequest.status >= 200 && mujRequest.status < 400) {
@@ -60,17 +60,17 @@ async function vratCistaData() {
   return cistaData;
 }
 
-function vytvorSelectNabidkuMen() {
+async function vytvorSelectNabidkuMen() {
   vyberMenySelect = document.getElementById("vyberMenySelect");
   // let cistaData = await vratCistaData();
   let cistaData = testovaciData;
 
-  for (const mena of cistaData) {
+  for (let i = 1; i < cistaData.length; i++) {
     let selectMena = document.createElement("option");
-    selectMena.innerHTML = `<option value="${mena.kurz}">${mena.zkratka} - ${mena.nazev}</option>`;
+    selectMena.innerText = `${cistaData[i].zkratka} - ${cistaData[i].nazev}`;
+    selectMena.value = i;
+    selectMena.setAttribute("kurz", cistaData[i].kurz);
+    selectMena.setAttribute("zkratka", cistaData[i].zkratka);
     vyberMenySelect.appendChild(selectMena);
-    console.log(mena);
   }
 }
-
-vytvorSelectNabidkuMen();
