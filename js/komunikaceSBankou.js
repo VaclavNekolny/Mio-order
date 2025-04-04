@@ -36,8 +36,8 @@ async function vratCistaData() {
 async function vytvorSelectNabidkuMen() {
   vyberMenySelect = document.getElementById("vyberMenySelect");
 
-  // let cistaData = await vratCistaData(); // čtení dat z API
-  let cistaData = testovaciData; // čtení dat z testovací proměnné
+  let cistaData = await vratCistaData(); // čtení dat z API
+  // let cistaData = testovaciData; // čtení dat z testovací proměnné
 
   for (let i = 1; i < cistaData.length; i++) {
     let selectMena = document.createElement("option");
