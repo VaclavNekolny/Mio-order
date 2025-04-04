@@ -9,3 +9,7 @@
 #tabulkaObjednavek {
   font-size: clamp(0.9rem, 2.5vw, 1rem);
 }
+
+#hlavickaObjednavky {
+  font-size: clamp(0.9rem, 2.5vw, 1.25rem);
+}
